@@ -187,7 +187,7 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 	 */
 	private <T> void setPersistentEntityId(T result, String id, Class<T> clazz) {
 
-		if (mappingContext != null && clazz.isAnnotationPresent(Document.class)) {
+		if (clazz.isAnnotationPresent(Document.class)) {
 
 //			ElasticsearchPersistentEntity<?> persistentEntity = mappingContext.getPersistentEntity(clazz);
 //			PersistentProperty<?> idProperty = persistentEntity.getIdProperty();
