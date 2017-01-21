@@ -114,4 +114,3 @@ public class Documents {
 为了区分id和_id，这里用了documentId替代_id。因为原版的spring-data-elasticsearch自动把这两个值混在一起了无法区分，所以这里用documentId代替。
 
 当实体类中的成员变量和es中的名称不一致时，可以用jackson的注解绑定两者。
-
