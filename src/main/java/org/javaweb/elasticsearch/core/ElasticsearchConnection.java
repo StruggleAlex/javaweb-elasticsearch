@@ -78,8 +78,8 @@ public class ElasticsearchConnection {
 		settingsBuilder.put("cluster.name", clusterName);
 		settingsBuilder.put("client.transport.sniff", transportSniff);
 
-		InetSocketAddress inetSocketAddress = new InetSocketAddress(clusterHost, clusterPort);
-		InetSocketTransportAddress transportAddress = new InetSocketTransportAddress(inetSocketAddress);
+		InetSocketAddress          inetSocketAddress = new InetSocketAddress(clusterHost, clusterPort);
+		InetSocketTransportAddress transportAddress  = new InetSocketTransportAddress(inetSocketAddress);
 
 		this.client = new PreBuiltTransportClient(settingsBuilder.build()).addTransportAddress(transportAddress);
 	}

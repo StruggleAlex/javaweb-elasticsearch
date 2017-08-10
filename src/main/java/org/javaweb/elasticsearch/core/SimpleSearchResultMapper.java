@@ -57,14 +57,15 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 	public SimpleSearchResultMapper(
 			MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext,
 			EntityMapper entityMapper) {
+
 		super(entityMapper);
 		this.mappingContext = mappingContext;
 	}
 
 	@Override
 	public <T> Page<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
-		long totalHits = response.getHits().totalHits();
-		List<T> results = new ArrayList<T>();
+		long    totalHits = response.getHits().totalHits();
+		List<T> results   = new ArrayList<T>();
 		setSearchHit(response, clazz, results);
 		return new PageImpl<T>(results, pageable, totalHits);
 	}
@@ -80,9 +81,10 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 	 * @return
 	 */
 	public <T> org.javaweb.core.commons.Page<T> mapResults(SearchResponse response, Class<T> clazz, int pageNum, int pageSize) {
-		long totalHits = response.getHits().totalHits();
-		List<T> results = new ArrayList<T>();
+		long    totalHits = response.getHits().totalHits();
+		List<T> results   = new ArrayList<T>();
 		setSearchHit(response, clazz, results);
+
 		return new org.javaweb.core.commons.Page<T>(pageNum, pageSize, results, totalHits);
 	}
 
@@ -90,11 +92,13 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 		for (SearchHit hit : response.getHits()) {
 			if (hit != null) {
 				T result = null;
+
 				if (StringUtils.isNotBlank(hit.sourceAsString())) {
 					result = mapEntity(hit.sourceAsString(), clazz);
 				} else {
 					result = mapEntity(hit.getFields().values(), clazz);
 				}
+
 				setPersistentEntityId(result, hit.getId(), clazz);
 				populateScriptFields(result, hit);
 				results.add(result);
@@ -106,11 +110,14 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 		if (hit.getFields() != null && !hit.getFields().isEmpty() && result != null) {
 			for (java.lang.reflect.Field field : result.getClass().getDeclaredFields()) {
 				ScriptedField scriptedField = field.getAnnotation(ScriptedField.class);
+
 				if (scriptedField != null) {
-					String name = scriptedField.name().isEmpty() ? field.getName() : scriptedField.name();
+					String         name           = scriptedField.name().isEmpty() ? field.getName() : scriptedField.name();
 					SearchHitField searchHitField = hit.getFields().get(name);
+
 					if (searchHitField != null) {
 						field.setAccessible(true);
+
 						try {
 							field.set(result, searchHitField.getValue());
 						} catch (IllegalArgumentException e) {
@@ -133,20 +140,24 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 	private String buildJSONFromFields(Collection<SearchHitField> values) {
 		JsonFactory nodeFactory = new JsonFactory();
 		try {
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			JsonGenerator generator = nodeFactory.createGenerator(stream, JsonEncoding.UTF8);
+			ByteArrayOutputStream stream    = new ByteArrayOutputStream();
+			JsonGenerator         generator = nodeFactory.createGenerator(stream, JsonEncoding.UTF8);
 			generator.writeStartObject();
+
 			for (SearchHitField value : values) {
 				if (value.getValues().size() > 1) {
 					generator.writeArrayFieldStart(value.getName());
+
 					for (Object val : value.getValues()) {
 						generator.writeObject(val);
 					}
+
 					generator.writeEndArray();
 				} else {
 					generator.writeObjectField(value.getName(), value.getValue());
 				}
 			}
+
 			generator.writeEndObject();
 			generator.flush();
 			return new String(stream.toByteArray(), Charset.forName("UTF-8"));
@@ -158,6 +169,7 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 	@Override
 	public <T> T mapResult(GetResponse response, Class<T> clazz) {
 		T result = mapEntity(response.getSourceAsString(), clazz);
+
 		if (result != null) {
 			setPersistentEntityId(result, response.getId(), clazz);
 		}
@@ -167,6 +179,7 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 	@Override
 	public <T> LinkedList<T> mapResults(MultiGetResponse responses, Class<T> clazz) {
 		LinkedList<T> list = new LinkedList<T>();
+
 		for (MultiGetItemResponse response : responses.getResponses()) {
 			if (!response.isFailed() && response.getResponse().isExists()) {
 				T result = mapEntity(response.getResponse().getSourceAsString(), clazz);
@@ -174,6 +187,7 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 				list.add(result);
 			}
 		}
+		
 		return list;
 	}
 
@@ -198,8 +212,8 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 //			}
 
 			// 直接写死了,如果要输出id必须在实体层定义一个setDocumentId成员变量
-			String setDocumentId = "setDocumentId";
-			Method[] methods = clazz.getDeclaredMethods();
+			String   setDocumentId = "setDocumentId";
+			Method[] methods       = clazz.getDeclaredMethods();
 			for (Method method : methods) {
 				if (method.getName().equals(setDocumentId)) {
 					try {

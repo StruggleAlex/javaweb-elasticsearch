@@ -102,10 +102,10 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 	@Override
 	public <T> Page<T> queryForPage(SearchRequest searchRequest, Class<T> clazz) {
 		SearchResponse response = client.search(searchRequest).actionGet();
-		int from = searchRequest.source().from();
-		int size = searchRequest.source().size();
+		int            from     = searchRequest.source().from();
+		int            size     = searchRequest.source().size();
+		int            pageNum  = convertPageNumber(from, size);
 
-		int pageNum = convertPageNumber(from, size);
 		return new SimpleSearchResultMapper().mapResults(response, clazz, pageNum, size);
 	}
 
