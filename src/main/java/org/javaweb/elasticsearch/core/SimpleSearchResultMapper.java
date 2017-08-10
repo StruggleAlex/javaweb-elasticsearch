@@ -187,7 +187,7 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 				list.add(result);
 			}
 		}
-		
+
 		return list;
 	}
 
@@ -202,14 +202,6 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 	private <T> void setPersistentEntityId(T result, String id, Class<T> clazz) {
 
 		if (clazz.isAnnotationPresent(Document.class)) {
-
-//			ElasticsearchPersistentEntity<?> persistentEntity = mappingContext.getPersistentEntity(clazz);
-//			PersistentProperty<?> idProperty = persistentEntity.getIdProperty();
-//
-//			// Only deal with String because ES generated Ids are strings !
-//			if (idProperty != null && idProperty.getType().isAssignableFrom(String.class)) {
-//				persistentEntity.getPropertyAccessor(result).setProperty(idProperty, id);
-//			}
 
 			// 直接写死了,如果要输出id必须在实体层定义一个setDocumentId成员变量
 			String   setDocumentId = "setDocumentId";
