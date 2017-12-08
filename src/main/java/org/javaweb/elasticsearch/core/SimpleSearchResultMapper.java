@@ -3,15 +3,16 @@ package org.javaweb.elasticsearch.core;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
-import org.javaweb.core.utils.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -80,12 +81,12 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 	 * @param <T>
 	 * @return
 	 */
-	public <T> org.javaweb.core.commons.Page<T> mapResults(SearchResponse response, Class<T> clazz, int pageNum, int pageSize) {
+	public <T> Page<T> mapResults(SearchResponse response, Class<T> clazz, int pageNum, int pageSize) {
 		long    totalHits = response.getHits().totalHits();
 		List<T> results   = new ArrayList<T>();
 		setSearchHit(response, clazz, results);
 
-		return new org.javaweb.core.commons.Page<T>(pageNum, pageSize, results, totalHits);
+		return new PageImpl<T>(results, new PageRequest(pageNum, pageSize), totalHits);
 	}
 
 	private <T> void setSearchHit(SearchResponse response, Class<T> clazz, List<T> results) {
@@ -93,8 +94,8 @@ public class SimpleSearchResultMapper extends AbstractResultMapper {
 			if (hit != null) {
 				T result = null;
 
-				if (StringUtils.isNotBlank(hit.sourceAsString())) {
-					result = mapEntity(hit.sourceAsString(), clazz);
+				if (StringUtils.isNotBlank(hit.getSourceAsString())) {
+					result = mapEntity(hit.getSourceAsString(), clazz);
 				} else {
 					result = mapEntity(hit.getFields().values(), clazz);
 				}

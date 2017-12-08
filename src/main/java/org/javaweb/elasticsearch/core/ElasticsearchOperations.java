@@ -17,7 +17,7 @@ package org.javaweb.elasticsearch.core;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.Client;
-import org.javaweb.core.commons.Page;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 

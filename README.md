@@ -1,11 +1,11 @@
-#javaweb-elasticsearch
+# javaweb-elasticsearch
 
 
 javaweb-elasticsearch是一个封装了[Spring-Data-Elasticsearch](https://github.com/spring-projects/spring-data-elasticsearch)的elasticsearch库。因为spring-data-elasticsearch项目更新速度实在是太慢了，远不及新版的elasticsearch。
 
 在使用spring-data-elasticsearch中很多时候我们仅仅只需要用到它的查询功能，所有这里只封装了基本的Springhe 和 elasticsearch的集成以及只要基本查询功能的ElasticsearchTemplate。
 
-##javaweb-elasticsearch 与 Spring 集成
+## javaweb-elasticsearch 与 Spring 集成
 
 **添加如下pom.xml依赖**
 

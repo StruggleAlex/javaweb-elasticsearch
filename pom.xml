@@ -55,12 +55,6 @@
             <version>1.13.3.RELEASE</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.javaweb</groupId>
-            <artifactId>javaweb-commons</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
     </dependencies>
 
     <build>

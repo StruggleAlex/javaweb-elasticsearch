@@ -19,8 +19,8 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.javaweb.core.commons.Page;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +86,7 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 	public <T> List<T> queryForList(SearchRequest searchRequest, Class<T> clazz) {
 		Page<T> pages = queryForPage(searchRequest, clazz);
 		if (pages != null) {
-			return pages.getResult();
+			return pages.getContent();
 		}
 		return new ArrayList<T>();
 	}
@@ -94,9 +94,9 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 	/**
 	 * 分页查询
 	 *
+	 * @param <T>
 	 * @param searchRequest
 	 * @param clazz
-	 * @param <T>
 	 * @return
 	 */
 	@Override
