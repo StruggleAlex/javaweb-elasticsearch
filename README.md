@@ -116,4 +116,4 @@ public class Documents {
 
 ## 版本更新
 
-本次更新升级了elasticsearch(6.0.1)和spring-data-elasticsearch(3.0.2.RELEASE)版本为最新版本.
+本次更新升级了elasticsearch(6.0.1)和spring-data-elasticsearch(3.0.2.RELEASE)版本为最新版本，移除了原来对javaweb项目的依赖。
