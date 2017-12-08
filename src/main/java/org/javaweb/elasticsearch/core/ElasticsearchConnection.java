@@ -18,11 +18,6 @@ public class ElasticsearchConnection {
 	private Client client;
 
 	/**
-	 * 集群名称
-	 */
-	private String clusterName = "elasticsearch";
-
-	/**
 	 * 集群主机地址
 	 */
 	private String clusterHost = "127.0.0.1";
@@ -33,20 +28,28 @@ public class ElasticsearchConnection {
 	private int clusterPort = 9300;
 
 	/**
+	 * 集群名称
+	 */
+	private String clusterName = "elasticsearch";
+
+	/**
 	 * 是否嗅探集群
 	 */
 	private boolean transportSniff = true;
+
+	public ElasticsearchConnection(String clusterHost, int clusterPort, String clusterName, boolean transportSniff) {
+		this.clusterHost = clusterHost;
+		this.clusterPort = clusterPort;
+		this.clusterName = clusterName;
+		this.transportSniff = transportSniff;
+	}
 
 	public Client getClient() {
 		return client;
 	}
 
-	public String getClusterName() {
-		return clusterName;
-	}
-
-	public void setClusterName(String clusterName) {
-		this.clusterName = clusterName;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	public String getClusterHost() {
@@ -63,6 +66,14 @@ public class ElasticsearchConnection {
 
 	public void setClusterPort(int clusterPort) {
 		this.clusterPort = clusterPort;
+	}
+
+	public String getClusterName() {
+		return clusterName;
+	}
+
+	public void setClusterName(String clusterName) {
+		this.clusterName = clusterName;
 	}
 
 	public boolean isTransportSniff() {
