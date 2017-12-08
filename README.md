@@ -1,11 +1,10 @@
-#javaweb-elasticsearch
-
+# javaweb-elasticsearch
 
 javaweb-elasticsearch是一个封装了[Spring-Data-Elasticsearch](https://github.com/spring-projects/spring-data-elasticsearch)的elasticsearch库。因为spring-data-elasticsearch项目更新速度实在是太慢了，远不及新版的elasticsearch。
 
 在使用spring-data-elasticsearch中很多时候我们仅仅只需要用到它的查询功能，所有这里只封装了基本的Springhe 和 elasticsearch的集成以及只要基本查询功能的ElasticsearchTemplate。
 
-##javaweb-elasticsearch 与 Spring 集成
+## javaweb-elasticsearch 与 Spring 集成
 
 **添加如下pom.xml依赖**
 
@@ -13,31 +12,31 @@ javaweb-elasticsearch是一个封装了[Spring-Data-Elasticsearch](https://githu
 <dependency>
     <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch</artifactId>
-    <version>5.1.1</version>
+    <version>6.0.1</version>
 </dependency>
 
 <dependency>
     <groupId>org.elasticsearch.client</groupId>
     <artifactId>transport</artifactId>
-    <version>5.1.1</version>
+    <version>6.0.1</version>
 </dependency>
 
 <dependency>
     <groupId>org.springframework.data</groupId>
     <artifactId>spring-data-elasticsearch</artifactId>
-    <version>2.0.6.RELEASE</version>
+    <version>3.0.2.RELEASE</version>
 </dependency>
 
 <dependency>
     <groupId>org.springframework.data</groupId>
     <artifactId>spring-data-jpa</artifactId>
-    <version>1.10.6.RELEASE</version>
+    <version>2.0.2.RELEASE</version>
 </dependency>
 
 <dependency>
     <groupId>org.springframework.data</groupId>
-    <artifactId>spring-data-commons</artifactId>
-    <version>1.12.6.RELEASE</version>
+    <artifactId>spring-data-commons-core</artifactId>
+    <version>1.4.1.RELEASE</version>
 </dependency>
 ```
 需根据实际情况选择对应的依赖版本号。
@@ -114,3 +113,7 @@ public class Documents {
 为了区分id和_id，这里用了documentId替代_id。因为原版的spring-data-elasticsearch自动把这两个值混在一起了无法区分，所以这里用documentId代替。
 
 当实体类中的成员变量和es中的名称不一致时，可以用jackson的注解绑定两者。
+
+## 版本更新
+
+本次更新升级了elasticsearch(6.0.1)和spring-data-elasticsearch(3.0.2.RELEASE)版本为最新版本.
