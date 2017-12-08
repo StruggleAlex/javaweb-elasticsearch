@@ -2,7 +2,7 @@ package org.javaweb.elasticsearch.core;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetSocketAddress;
@@ -78,10 +78,10 @@ public class ElasticsearchConnection {
 		settingsBuilder.put("cluster.name", clusterName);
 		settingsBuilder.put("client.transport.sniff", transportSniff);
 
-		InetSocketAddress          inetSocketAddress = new InetSocketAddress(clusterHost, clusterPort);
-		InetSocketTransportAddress transportAddress  = new InetSocketTransportAddress(inetSocketAddress);
+		InetSocketAddress inetSocketAddress = new InetSocketAddress(clusterHost, clusterPort);
 
-		this.client = new PreBuiltTransportClient(settingsBuilder.build()).addTransportAddress(transportAddress);
+		this.client = new PreBuiltTransportClient(settingsBuilder.build()).
+				addTransportAddress(new TransportAddress(inetSocketAddress));
 	}
 
 }

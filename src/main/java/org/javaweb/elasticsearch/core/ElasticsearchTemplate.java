@@ -19,8 +19,8 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.javaweb.core.commons.Page;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 	 */
 	@Override
 	public long docCount(SearchRequest searchRequest) {
-		return client.search(searchRequest).actionGet().getHits().totalHits();
+		return client.search(searchRequest).actionGet().getHits().getTotalHits();
 	}
 
 	/**
@@ -69,6 +69,7 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 	@Override
 	public <T> T queryForObject(SearchRequest searchRequest, Class<T> clazz) {
 		List<T> list = queryForList(searchRequest, clazz);
+
 		if (list.size() > 1) {
 			new IncorrectResultSizeDataAccessException(list.size()).printStackTrace();
 		}
@@ -85,8 +86,9 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 	@Override
 	public <T> List<T> queryForList(SearchRequest searchRequest, Class<T> clazz) {
 		Page<T> pages = queryForPage(searchRequest, clazz);
+
 		if (pages != null) {
-			return pages.getResult();
+			return pages.getContent();
 		}
 		return new ArrayList<T>();
 	}
