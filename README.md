@@ -1,8 +1,8 @@
 # javaweb-elasticsearch
 
-javaweb-elasticsearch是一个封装了[Spring-Data-Elasticsearch](https://github.com/spring-projects/spring-data-elasticsearch)的elasticsearch库。因为spring-data-elasticsearch项目更新速度实在是太慢了，远不及新版的elasticsearch。
+javaweb-elasticsearch是一个简化版的elasticsearch对象查询库,只提供了基本的es对象查询方法。在之前一直使用[Spring-Data-Elasticsearch](https://github.com/spring-projects/spring-data-elasticsearch)项目，但是它的更新速度实在是太慢了，而且无可参考文档、几乎每个新版本代码变动太大让人无法忍受。
 
-在使用spring-data-elasticsearch中很多时候我们仅仅只需要用到它的查询功能，所有这里只封装了基本的Springhe 和 elasticsearch的集成以及只要基本查询功能的ElasticsearchTemplate。因为Spring Boot还没升级内置的elasticsearch版本，所以目前暂不支持Spring Boot。
+在这里我只是封装了基本的Spring 和 elasticsearch的集成以及只有基本查询功能的ElasticsearchTemplate。当前版本已支持与Spring Boot共同配置。
 
 ## javaweb-elasticsearch 与 Spring 集成
 
@@ -41,7 +41,7 @@ javaweb-elasticsearch是一个封装了[Spring-Data-Elasticsearch](https://githu
 ```
 需根据实际情况选择对应的依赖版本号。
 
-**在配置Spring配置elasticsearch集群连接和ElasticsearchTemplate**
+**在Spring中配置elasticsearch集群连接和ElasticsearchTemplate**
 
 ```
 <!-- 加载 elasticsearch 连接 -->
@@ -59,6 +59,56 @@ javaweb-elasticsearch是一个封装了[Spring-Data-Elasticsearch](https://githu
 </bean>
 ```
 `clusterName`填写集群名称,`clusterHost`填写集群主机地址(集群中的任意主机地址),`clusterPort`填写集群通信端口(注意是socket端口),`transportSniff`是否自动探测集群节点。
+
+
+**在SpringBoot中配置**
+
+在application.properties中添加:
+
+```
+# Elasticsearch 配置
+#
+elasticsearch.clusterName=elasticsearch
+elasticsearch.clusterHost=127.0.0.1
+elasticsearch.clusterPort=9300
+elasticsearch.transportSniff=true
+```
+
+然后新建`ElasticsearchConfig.java`
+
+```
+import org.javaweb.elasticsearch.core.ElasticsearchConnection;
+import org.javaweb.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.bind.RelaxedPropertyResolver;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+
+@Configuration
+public class ElasticsearchConfig {
+
+	@Autowired
+	private Environment environment;
+
+	@Bean(value = "elasticsearchConnection", initMethod = "init")
+	public ElasticsearchConnection elasticsearchConnection() {
+		RelaxedPropertyResolver config         = new RelaxedPropertyResolver(environment, "elasticsearch.");
+		String                  clusterName    = config.getProperty("clusterName");
+		Boolean                 transportSniff = config.getProperty("transportSniff", Boolean.class);
+		String                  clusterHost    = config.getProperty("clusterHost");
+		int                     clusterPort    = Integer.parseInt(config.getProperty("clusterPort"));
+
+		return new ElasticsearchConnection(clusterHost, clusterPort, clusterName, transportSniff);
+	}
+
+	@Bean("elasticsearchTemplate")
+	public ElasticsearchTemplate elasticsearchTemplate(ElasticsearchConnection elasticsearchConnection) {
+		return new ElasticsearchTemplate(elasticsearchConnection);
+	}
+
+}
+```
 
 **使用ElasticsearchTemplate做基本的查询**
 
@@ -90,11 +140,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Document(indexName = "web-aliases", type = "documents", indexStoreType = "memory", shards = 10, replicas = 0, refreshInterval = "-1")
 public class Documents {
-
-	@Id
-	private String documentId;
 
 	private String id;
 	private String domain;
@@ -110,10 +156,8 @@ public class Documents {
 	......
 ```
 
-为了区分id和_id，这里用了documentId替代_id。因为原版的spring-data-elasticsearch自动把这两个值混在一起了无法区分，所以这里用documentId代替。
-
 当实体类中的成员变量和es中的名称不一致时，可以用jackson的注解绑定两者。
 
 ## 版本更新
 
-本次更新升级了elasticsearch(6.0.1)和spring-data-elasticsearch(3.0.2.RELEASE)版本为最新版本，移除了原来对javaweb项目的依赖。
+本次更新升级了elasticsearch(6.0.1)和spring-data-elasticsearch(3.0.2.RELEASE)版本为最新版本，移除了原来对javaweb、spring-data-elasticsearch项目的依赖。

@@ -1,7 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
-.gitignore
 .idea
 javaweb-elasticsearch.iml
-src/main/resources/
-src/test/
 target/

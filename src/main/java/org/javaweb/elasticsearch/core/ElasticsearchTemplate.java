@@ -72,8 +72,11 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 
 		if (list.size() > 1) {
 			new IncorrectResultSizeDataAccessException(list.size()).printStackTrace();
+		} else if (list.size() == 1) {
+			return list.get(0);
 		}
-		return list.get(0);
+
+		return null;
 	}
 
 	/**
@@ -87,7 +90,7 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 	public <T> List<T> queryForList(SearchRequest searchRequest, Class<T> clazz) {
 		Page<T> pages = queryForPage(searchRequest, clazz);
 
-		if (pages != null) {
+		if (pages != null && pages.getTotalElements() > 0) {
 			return pages.getContent();
 		}
 		return new ArrayList<T>();
@@ -105,10 +108,10 @@ public class ElasticsearchTemplate implements ElasticsearchOperations {
 	public <T> Page<T> queryForPage(SearchRequest searchRequest, Class<T> clazz) {
 		SearchResponse response = client.search(searchRequest).actionGet();
 		int            from     = searchRequest.source().from();
-		int            size     = searchRequest.source().size();
-		int            pageNum  = convertPageNumber(from, size);
+		int            pageSize = searchRequest.source().size();
+		int            pageNum  = convertPageNumber(from, pageSize);
 
-		return new SimpleSearchResultMapper().mapResults(response, clazz, pageNum, size);
+		return new SimpleSearchResultMapper().mapResults(response, clazz, pageNum, pageSize);
 	}
 
 	public SearchRequestBuilder startQueryBuilder(String[] index, String[] type) {

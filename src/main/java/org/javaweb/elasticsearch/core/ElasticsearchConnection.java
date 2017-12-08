@@ -84,7 +84,7 @@ public class ElasticsearchConnection {
 		this.transportSniff = transportSniff;
 	}
 
-	private void init() {
+	public void init() {
 		Settings.Builder settingsBuilder = Settings.builder();
 		settingsBuilder.put("cluster.name", clusterName);
 		settingsBuilder.put("client.transport.sniff", transportSniff);
