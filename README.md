@@ -161,3 +161,7 @@ public class Documents {
 ## 版本更新
 
 本次更新升级了elasticsearch(6.0.1)和spring-data-elasticsearch(3.0.2.RELEASE)版本为最新版本，移除了原来对javaweb、spring-data-elasticsearch项目的依赖。
+
+## Notice
+
+如果你当前的Spring Data JPA版本是2.x,请修改`org.javaweb.elasticsearch.core.SimpleSearchResultMapper`类的`mapResults`方法。将`return new PageImpl<T>(results, new PageRequest(pageNum, pageSize), totalHits);`替换成`return new PageImpl<T>(results, PageRequest.of(pageNum, pageSize), totalHits);`。
